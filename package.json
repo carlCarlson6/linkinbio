@@ -1,0 +1,12 @@
+{
+  "name": "my-monorepo",
+  "private": true,
+  "workspaces": [
+    "be",
+    "fe"
+  ],
+  "scripts": {
+    "fe:dev": "npm run dev --workspace=fe",
+    "fe:build": "npm run build --workspace=fe"
+  }
+}
