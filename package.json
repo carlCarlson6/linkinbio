@@ -6,12 +6,12 @@
     "frontend"
   ],
   "scripts": {
-    "frontend:dev": "npm run dev --workspace=frontend",
-    "frontend:build": "npm run build --workspace=frontend",
-    "backend:dev": "npm run dev --workspace=backend",
-    "backend:build": "npm run build --workspace=backend",
-    "build": "concurrently \"npm run frontend:build\" \"npm run backend:build\"",
-    "dev": "concurrently \"npm run backend:dev\" \"npm run frontend:dev\"",
+    "fe:dev": "npm run dev --workspace=frontend",
+    "fe:build": "npm run build --workspace=frontend",
+    "be:dev": "npm run dev --workspace=backend",
+    "be:build": "npm run build --workspace=backend",
+    "build": "concurrently \"npm run fe:build\" \"npm run be:build\"",
+    "dev": "concurrently \"npm run fe:dev\" \"npm run fe:dev\"",
     "start": "npm run start --workspace=backend"
   },
   "dependencies": {

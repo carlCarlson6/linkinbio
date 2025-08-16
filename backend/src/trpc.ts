@@ -1,9 +1,9 @@
 import { initTRPC } from '@trpc/server';
 import { getAuth } from '@clerk/express';
-import type { NextFunction, Request, Response } from 'express';
+import type { Request, Response } from 'express';
 
 // tRPC context with user
-export async function createContext({ req, res }: { req: Request; res: Response }) {
+export async function createContext({ req }: { req: Request; res: Response }) {
   const auth = getAuth(req);
   return {
     user: auth.userId ? { id: auth.userId } : null,

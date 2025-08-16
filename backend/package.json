@@ -4,13 +4,14 @@
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "dev": "ts-node src/index.ts",
+    "dev": "concurrently \"tsc -watch\" \"nodemon dist/index.js\"",
     "build": "tsc",
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "@clerk/clerk-sdk-node": "^4.0.0",
-    "@clerk/express": "^1.7.20",
+    "@clerk/clerk-sdk-node": "^5.1.6",
+    "@clerk/express": "^1.7.21",
+    "@clerk/types": "^4.78.0",
     "@trpc/server": "^11.4.4",
     "dotenv": "^17.2.1",
     "express": "^4.18.2",

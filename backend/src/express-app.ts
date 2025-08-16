@@ -30,8 +30,7 @@ app.get('/api/protected', (req, res) => {
 const frontendBuildPath = path.resolve(__dirname, '../../frontend/dist');
 app.use(express.static(frontendBuildPath));
 
-// Fallback to index.html for SPA
-app.get('*', (req, res) => {
+app.get('/', (req, res) => {
   res.sendFile(path.join(frontendBuildPath, 'index.html'));
 });
 
