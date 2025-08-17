@@ -1,7 +1,7 @@
 import { useUser, SignInButton } from '@clerk/clerk-react';
 import { createRoute, useRouter } from '@tanstack/react-router';
 import { Button, Flex, Heading } from '@radix-ui/themes';
-import { rootRoute } from '../infrastructure/tanstack-router';
+import { rootRoute } from './infrastructure/tanstack-router';
 
 export const homeRoute = createRoute({
   path: '/',

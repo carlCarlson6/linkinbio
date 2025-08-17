@@ -1,36 +1,35 @@
 import express from 'express';
 import path from 'path';
-import { ClerkExpressRequireAuth } from '@clerk/clerk-sdk-node';
+import cors from 'cors';
 import * as trpcExpress from '@trpc/server/adapters/express';
-import { appRouter, createContext } from './trpc.js';
+import dotenv from 'dotenv';
+import { clerkMiddleware } from '@clerk/express';
+import { beAppRouter, createTrpcContext } from 'trpc';
 
 const app = express();
 
-// Load environment variables
-import dotenv from 'dotenv';
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
-app.use(express.json());
+// Enable CORS for local frontend (adjust port if needed)
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true,
+}));
 
-// Protect all API routes with Clerk authentication
-app.use('/api', ClerkExpressRequireAuth());
+app.use(express.json());
+app.use(clerkMiddleware());
 
 // tRPC setup
 app.use('/api/trpc', trpcExpress.createExpressMiddleware({
-  router: appRouter,
-  createContext,
+  router: beAppRouter,
+  createContext: createTrpcContext,
 }));
-
-// Example protected API route
-app.get('/api/protected', (req, res) => {
-  res.json({ message: 'You are authenticated with Clerk!' });
-});
 
 // Serve static files from the frontend build
 const frontendBuildPath = path.resolve(__dirname, '../../frontend/dist');
 app.use(express.static(frontendBuildPath));
 
-app.get('/', (req, res) => {
+app.get('/', (_, res) => {
   res.sendFile(path.join(frontendBuildPath, 'index.html'));
 });
 

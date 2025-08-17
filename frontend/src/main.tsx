@@ -4,18 +4,16 @@ import { createRoot } from 'react-dom/client';
 import { ClerkProvider } from '@clerk/clerk-react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
-import { queryClient, trpc, trpcClient } from './infrastructure/trpc';
+import { queryClient, trpcReact, trpcClient } from './infrastructure/trpc';
 import { Theme } from "@radix-ui/themes";
-import { dashboardRoute } from "./dashboard";
-import { homeRoute } from "./landing";
+import { dashboardRoute } from "./Dashboard";
+import { homeRoute } from "./Landing";
 import { rootRoute } from "./infrastructure/tanstack-router";
 
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 if (!clerkPubKey) {
   throw new Error('VITE_CLERK_PUBLISHABLE_KEY is not set in the environment. Please set it in your .env file.');
 }
-
-
 
 export const router = createRouter({
   routeTree: rootRoute.addChildren([
@@ -24,17 +22,16 @@ export const router = createRouter({
   ]),
 });
 
-
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ClerkProvider publishableKey={clerkPubKey}>
-      <trpc.Provider client={trpcClient} queryClient={queryClient}>
+      <trpcReact.Provider client={trpcClient} queryClient={queryClient}>
         <QueryClientProvider client={queryClient}>
           <Theme>
             <RouterProvider router={router} />
           </Theme>
         </QueryClientProvider>
-      </trpc.Provider>
+      </trpcReact.Provider>
     </ClerkProvider>
   </React.StrictMode>
 );
