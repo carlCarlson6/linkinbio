@@ -7,9 +7,11 @@ import {
   HeadContent,
   Scripts,
 } from '@tanstack/react-router'
+import appCss from '../styles.css?url'
 
 export const Route = createRootRoute({
   head: () => ({
+    links: [{ rel: 'stylesheet', href: appCss }],
     meta: [
       {
         charSet: 'utf-8',
