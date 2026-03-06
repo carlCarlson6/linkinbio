@@ -8,8 +8,22 @@ import {
   Scripts,
 } from '@tanstack/react-router'
 import appCss from '../styles.css?url'
+import { ClerkProvider } from '@clerk/tanstack-react-start'
+import { env } from '../env'
+import { createServerFn } from '@tanstack/react-start'
+import { auth } from '@clerk/tanstack-react-start/server'
+
+const fetchClerkAuth = createServerFn({ method: 'GET' }).handler(async () => {
+  const { userId } = await auth();
+  if (!userId) return undefined;
+  return { userId };
+});
 
 export const Route = createRootRoute({
+  beforeLoad: async () => {
+    const user = await fetchClerkAuth();
+    return { user };
+  },
   head: () => ({
     links: [{ rel: 'stylesheet', href: appCss }],
     meta: [
@@ -43,7 +57,9 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
         <HeadContent />
       </head>
       <body>
-        {children}
+        <ClerkProvider>
+          {children}
+        </ClerkProvider>
         <Scripts />
       </body>
     </html>

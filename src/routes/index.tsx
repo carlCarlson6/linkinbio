@@ -1,6 +1,12 @@
-import { Link, createFileRoute } from '@tanstack/react-router'
+import { SignIn, SignInButton } from '@clerk/tanstack-react-start'
+import { Link, createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({
+  beforeLoad: async ({context: { user }}) => {
+    if (user) {
+      throw redirect({ to: '/dashboard' })
+    }
+  },
   component: RouteComponent,
 })
 
@@ -21,13 +27,19 @@ function RouteComponent() {
         </p>
 
         <div className="mt-7">
-          <Link
-            to="/test"
-            className="inline-block rounded-[10px] bg-slate-900 px-5 py-3 font-semibold text-white no-underline"
+          <SignInButton
+            mode="modal" 
+            forceRedirectUrl={'/dashboard'}
           >
-            Access platform
-          </Link>
+            <button 
+              type="button"
+              className="inline-block rounded-[10px] bg-slate-900 px-5 py-3 font-semibold text-white no-underline hover:cursor-pointer hover:bg-slate-600 hover:shadow-2xl focus:bg-slate-600 focus:shadow-2xl"
+            >
+              Access platform
+            </button>
+          </SignInButton>
         </div>
+
       </section>
     </main>
   )
