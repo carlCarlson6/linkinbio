@@ -43,6 +43,7 @@ Your job is to execute pending tasks from analysis to PR with traceable planning
   - Changes Made
   - Problems Found
   - Validation
+Follow the [PR template](./assets/PULL_REQUEST_TEMPLATE.md) structure for consistency.
 
 ## Constraints
 - Task branches must be created from `dev` and PRs must target `dev`. Never target `main` directly.

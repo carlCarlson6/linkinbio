@@ -12,6 +12,9 @@
 
 ## Validation
 <!-- How were the changes verified? (e.g. build output, tests run, manual checks) -->
+Check build works.
+Check preview deployment works.
+Check it works locally (npm run dev)
 
 ---
 
