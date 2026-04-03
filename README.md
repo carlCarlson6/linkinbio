@@ -27,7 +27,7 @@ Handles authentication UI (`SignInButton`, `UserButton`) and server-side auth co
 Used as the development server and bundler (`npm run dev`, `npm run build`).
 
 ### Nitro (nightly)
-Included as a Vite plugin/runtime layer via `nitro/vite`.
+Included as a Vite plugin/runtime layer via `nitro/vite`. Pinned to `3.0.1-20260227-181935-bfbb207c` for reproducible installs.
 
 ### Tailwind CSS v4
 Used for utility-first styling in route components.
@@ -45,7 +45,7 @@ Validates required environment variables, including Clerk keys for server and cl
 
 ## Task
 
-- [ ] `SEC-001` Resolve supply-chain drift from unpinned nightly dependency.
+- [x] `SEC-001` Resolve supply-chain drift from unpinned nightly dependency.
   Current risk: `package.json` uses `nitro: npm:nitro-nightly@latest`, which causes non-reproducible installs.
 
 - [ ] `SEC-002` Remove plaintext local secret exposure and rotate compromised keys.
