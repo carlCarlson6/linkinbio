@@ -1,6 +1,6 @@
 ---
 description: "Use when handling pending README tasks end-to-end: analyze task and codebase state, create task branch, implement changes, open PR, request reviews, and mark task done. Trigger words: pending task, task section, branch from task, create PR, assign reviewers, mark done in README."
-name: "Task PR Executor"
+name: "Task Executor"
 tools: [read, search, edit, execute, todo]
 argument-hint: "Task selector or constraints, for example: 'pick highest severity task from README and complete it'"
 user-invocable: true
@@ -34,6 +34,9 @@ Your job is to execute pending tasks from analysis to PR with traceable planning
 - Use lowercase kebab-case.
 - Keep names concise and deterministic.
 - Include a stable task code derived from README content (severity or sequence).
+
+## Commit Message Rules
+- Follow .github/instructions/commit-messages.instructions.md conventions.
 
 ## PR Content Requirements
 - Title format: [<task-code>] <task title>

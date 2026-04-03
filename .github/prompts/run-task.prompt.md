@@ -1,9 +1,9 @@
 ---
-description: "Quick-run prompt for the Task PR Executor agent. Use this to pick and complete a pending README task end-to-end with a single command."
-agent: Task PR Executor
+description: "Quick-run prompt for the Task Executor agent. Use this to pick and complete a pending README task end-to-end with a single command."
+agent: Task Executor
 tools: [read, search, edit, execute, todo]
 ---
-Use the **Task PR Executor** agent.
+Use the **Task Executor** agent.
 
 Pick the highest-severity pending task from the `## Task` section in README.md.
 
