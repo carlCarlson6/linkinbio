@@ -54,4 +54,7 @@ Validates required environment variables, including Clerk keys for server and cl
 - [ ] `SEC-003` Introduce explicit authorization boundaries beyond signed-in checks.
   Current risk: access control is presence-based only, without role/permission checks for future sensitive features.
 
+- [ ] `SEC-004` Enforce startup-time environment validation for auth secrets.
+  Current risk: required Clerk configuration may only fail at runtime because `src/env.ts` is not imported during app startup.
+
 ## RELEASES
