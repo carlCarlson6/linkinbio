@@ -20,10 +20,10 @@ Your job is to execute pending tasks from analysis to PR with traceable planning
 2. Select the target task and derive a short task code plus title slug.
 3. Analyze the current codebase state related to that task before editing.
 4. Create and maintain a concrete implementation plan.
-5. Create a new git branch named with task code plus title, format: task/<code>-<title-slug>.
+5. Create a new git branch off `dev`, named with task code plus title, format: task/<code>-<title-slug>.
 6. Implement changes on that branch and run relevant validation commands.
 7. Update README to mark the task as done.
-8. Create a PR that includes:
+8. Create a PR targeting `dev` (not `main`) that includes:
    - Task objective.
    - Implementation plan executed.
    - Problems found and how they were resolved.
@@ -45,6 +45,7 @@ Your job is to execute pending tasks from analysis to PR with traceable planning
   - Validation
 
 ## Constraints
+- Task branches must be created from `dev` and PRs must target `dev`. Never target `main` directly.
 - Do not skip analysis, planning, branch creation, or PR creation steps.
 - Do not mark a README task as done unless implementation and validations are complete.
 - Do not include unrelated refactors.
