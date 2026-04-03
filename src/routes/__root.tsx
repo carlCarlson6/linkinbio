@@ -6,15 +6,15 @@ import {
   createRootRoute,
   HeadContent,
   Scripts,
+  redirect,
 } from '@tanstack/react-router'
 import appCss from '../styles.css?url'
 import { ClerkProvider } from '@clerk/tanstack-react-start'
-import { env } from '../env'
 import { createServerFn } from '@tanstack/react-start'
 import { auth } from '@clerk/tanstack-react-start/server'
 
 const fetchClerkAuth = createServerFn({ method: 'GET' }).handler(async () => {
-  const { userId } = await auth();
+  const { userId, sessionId } = await auth();
   if (!userId) return undefined;
   return { userId };
 });
@@ -24,6 +24,7 @@ export const Route = createRootRoute({
     const user = await fetchClerkAuth();
     return { user };
   },
+  notFoundComponent: () => { throw redirect({ to: '/' }) },
   head: () => ({
     links: [{ rel: 'stylesheet', href: appCss }],
     meta: [
