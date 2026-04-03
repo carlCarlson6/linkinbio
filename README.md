@@ -53,3 +53,5 @@ Validates required environment variables, including Clerk keys for server and cl
 
 - [ ] `SEC-003` Introduce explicit authorization boundaries beyond signed-in checks.
   Current risk: access control is presence-based only, without role/permission checks for future sensitive features.
+
+## RELEASES

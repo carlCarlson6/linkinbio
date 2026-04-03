@@ -1,6 +1,6 @@
 ---
 description: "Quick-run prompt for the Task PR Executor agent. Use this to pick and complete a pending README task end-to-end with a single command."
-mode: agent
+agent: Task PR Executor
 tools: [read, search, edit, execute, todo]
 ---
 Use the **Task PR Executor** agent.
