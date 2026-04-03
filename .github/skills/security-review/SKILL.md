@@ -1,5 +1,5 @@
 ---
-name: security-review-workflow
+name: security-review
 description: 'Run a security review workflow from dev: create security-review timestamp branch, invoke App Security Reviewer, compare findings with README pending tasks, append missing findings as new README tasks, and open a PR to dev. Trigger words: security review, review workflow, app-security-reviewer, README tasks, create security-review branch, open PR.'
 argument-hint: 'Optional: scope (full|diff), severity floor, max new tasks, timestamp override (YYYYMMDDHHMMSS)'
 user-invocable: true
@@ -9,6 +9,13 @@ disable-model-invocation: false
 # Security Review Workflow
 
 Use this skill to run a repeatable security-review pass and convert net-new findings into tracked README tasks.
+
+## When to Use
+
+- Review the current repo security posture from `dev`
+- Compare security findings against the current `README.md` task backlog
+- Add newly discovered issues as follow-up tasks to resolve later
+- Open a tracking PR to `dev` for review and prioritization
 
 ## Inputs
 
@@ -59,10 +66,11 @@ Use this skill to run a repeatable security-review pass and convert net-new find
 
 7. Append new tasks to README.
 - If there are `net new` findings, append tasks under `## Task` using [single task item template](../../assets/task-template.md).
-- Generate next sequential ID using the existing prefix convention in README (for example `SEC-004` after `SEC-003`).
-- Task line format:
-  - `- [ ] \`SEC-XXX\` <imperative summary>.`
+- Generate the next sequential ID using the existing security prefix convention in README (for example `SEC-004` after `SEC-003`).
+- Use this exact item shape:
+  - `- [ ] \`SEC-XXX\` <short imperative summary>.`
   - `  Current risk: <one concise sentence>.`
+- Keep summaries actionable, specific, and scoped to one issue.
 - Do not edit existing completed tasks.
 
 8. Persist review output.
@@ -109,6 +117,6 @@ Use this skill to run a repeatable security-review pass and convert net-new find
 
 ## Example Prompts
 
-- `/security-review-workflow run full review and add missing tasks`
-- `/security-review-workflow scope=diff severity_floor=high`
-- `/security-review-workflow scope=full max_new_tasks=3`
+- `/security-review run full review and add missing tasks`
+- `/security-review scope=diff severity_floor=high`
+- `/security-review scope=full max_new_tasks=3`
