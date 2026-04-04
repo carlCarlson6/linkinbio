@@ -57,9 +57,9 @@ Validates required environment variables, including Clerk keys for server and cl
 - [x] `SEC-004` Enforce startup-time environment validation for auth secrets.
   Current risk: required Clerk configuration may only fail at runtime because `src/env.ts` is not imported during app startup.
 
-- [ ] `FEATURE-001` Start implementing Dashboard features. Start with beign able to create the entity `linkinbio` where the user can group their links, it will require an input of a @slug that should be unique.
+- [x] `FEATURE-001` Start implementing Dashboard features. Start with beign able to create the entity `linkinbio` where the user can group their links, it will require an input of a @slug that should be unique.
 
-- [ ] `FEATURE-002` Navigate to a link in bio. When user access to /@slug the linkinbio should be rendered. If does not exist display default 404 page for this case.
+- [x] `FEATURE-002` Navigate to a link in bio. When user access to /@slug the linkinbio should be rendered. If does not exist display default 404 page for this case.
 
 ## RELEASES
 
