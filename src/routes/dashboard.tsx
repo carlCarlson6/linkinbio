@@ -9,6 +9,44 @@ import { asc, eq } from 'drizzle-orm'
 import { useState } from 'react'
 import z from 'zod'
 
+const slugSchema = z.object({
+  slug: z
+    .string()
+    .min(1, 'Please enter a slug')
+    .regex(
+      /^[a-z0-9_-]+$/,
+      'Use only lowercase letters, numbers, hyphens, and underscores',
+    ),
+})
+
+function getFriendlySlugError(err: unknown) {
+  if (Array.isArray(err)) {
+    const firstIssue = err.find(
+      (issue): issue is { message?: string } =>
+        typeof issue === 'object' && issue !== null,
+    )
+
+    if (typeof firstIssue?.message === 'string') {
+      return firstIssue.message
+    }
+  }
+
+  if (err instanceof z.ZodError) {
+    return err.issues[0]?.message ?? 'Please enter a valid slug'
+  }
+
+  const message = err instanceof Error ? err.message : String(err)
+
+  if (
+    message.includes('invalid_format') ||
+    message.includes('Slug may only contain')
+  ) {
+    return 'Use only lowercase letters, numbers, hyphens, and underscores'
+  }
+
+  return message
+}
+
 const getLinkinbios = createServerFn({ method: 'GET' }).handler(async () => {
   const { userId } = await auth();
   if (!userId) return [];
@@ -20,7 +58,7 @@ const getLinkinbios = createServerFn({ method: 'GET' }).handler(async () => {
 });
 
 const createLinkinbio = createServerFn({ method: 'POST' })
-  .inputValidator(z.object({ slug: z.string().min(1).regex(/^[a-z0-9_-]+$/, 'Slug may only contain lowercase letters, numbers, hyphens and underscores') }))
+  .inputValidator(slugSchema)
   .handler(async ({ data }) => {
     const { userId } = await auth();
     if (!userId) throw new Error('Unauthorized');
@@ -46,8 +84,15 @@ function RouteComponent() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    const normalized = slug.trim().toLowerCase().replace(/^@/, '');
-    if (!normalized) { setError('Slug is required'); return; }
+
+    const normalized = slug.trim().toLowerCase().replace(/^@+/, '');
+    const validation = slugSchema.safeParse({ slug: normalized });
+
+    if (!validation.success) {
+      setError(validation.error.issues[0]?.message ?? 'Please enter a valid slug');
+      return;
+    }
+
     setPending(true);
     try {
       await createLinkinbio({ data: { slug: normalized } });
@@ -55,7 +100,11 @@ function RouteComponent() {
       await router.invalidate();
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code;
-      setError(code === '23505' ? 'That slug is already taken' : (err instanceof Error ? err.message : String(err)));
+      setError(
+        code === '23505'
+          ? 'That slug is already taken'
+          : getFriendlySlugError(err),
+      );
     } finally {
       setPending(false);
     }
