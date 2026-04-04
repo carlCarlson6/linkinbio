@@ -169,7 +169,7 @@ function RouteComponent() {
       closeDeleteModal();
       await router.invalidate();
     } catch (err: unknown) {
-      setDeleteError(err instanceof Error ? err.message : 'Failed to delete. Please try again.');
+      setDeleteError(formatErrorMessage(err));
     } finally {
       setDeletePending(false);
     }
@@ -225,21 +225,28 @@ function RouteComponent() {
           <ul className="flex flex-col gap-3">
             {items.map(item => (
               <li key={item.id} className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-                <span className="font-medium text-slate-800">@{item.slug}</span>
                 <div className="flex items-center gap-3">
-                  <a
-                    href={`/@${item.slug}`}
-                    className="text-sm text-slate-500 hover:text-slate-900 hover:underline"
-                  >
-                    View page →
-                  </a>
                   <button
                     onClick={() => openDeleteModal(item.slug)}
-                    className="rounded-lg border border-red-200 px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-50 hover:border-red-400"
+                    aria-label={`Delete @${item.slug}`}
+                    className="rounded-lg p-1.5 text-red-500 hover:bg-red-50 hover:text-red-700"
                   >
-                    Delete
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <polyline points="3 6 5 6 21 6" />
+                      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                      <path d="M10 11v6" />
+                      <path d="M14 11v6" />
+                      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                    </svg>
                   </button>
+                  <span className="font-medium text-slate-800">@{item.slug}</span>
                 </div>
+                <a
+                  href={`/@${item.slug}`}
+                  className="text-sm text-slate-500 hover:text-slate-900 hover:underline"
+                >
+                  View page →
+                </a>
               </li>
             ))}
           </ul>
@@ -248,8 +255,13 @@ function RouteComponent() {
 
       {deleteTarget !== null && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-          <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
-            <h3 className="text-lg font-semibold text-slate-900">Delete @{deleteTarget}?</h3>
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-dialog-title"
+            className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-xl"
+          >
+            <h3 id="delete-dialog-title" className="text-lg font-semibold text-slate-900">Delete @{deleteTarget}?</h3>
             <p className="mt-2 text-sm text-slate-600">
               This action cannot be undone. To confirm, type{' '}
               <span className="font-semibold text-slate-800">{deleteTarget}</span> below.
@@ -259,6 +271,7 @@ function RouteComponent() {
               value={deleteConfirm}
               onChange={e => setDeleteConfirm(e.target.value)}
               placeholder={deleteTarget}
+              aria-label={`Type ${deleteTarget} to confirm deletion`}
               className="mt-4 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
             />
             {deleteError && (
