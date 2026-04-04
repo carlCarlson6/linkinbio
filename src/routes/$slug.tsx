@@ -1,4 +1,4 @@
-import { createFileRoute, notFound } from '@tanstack/react-router'
+import { createFileRoute, notFound, redirect } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 import { db } from '../db'
@@ -10,18 +10,23 @@ const slugSchema = z.string().min(1).max(255)
 const getLinkinbioBySlug = createServerFn({ method: 'GET' })
   .inputValidator((slug) => slugSchema.parse(slug))
   .handler(async ({ data: slug }) => {
-    const normalized = slug.startsWith('@') ? slug.slice(1) : slug;
     const [page] = await db
       .select()
       .from(linkinbios)
-      .where(eq(linkinbios.slug, normalized))
+      .where(eq(linkinbios.slug, slug))
       .limit(1);
     return page ?? null;
   });
 
 export const Route = createFileRoute('/$slug')({
+  beforeLoad: ({ params }) => {
+    if (!params.slug.startsWith('@')) {
+      throw redirect({ to: '/$slug', params: { slug: `@${params.slug}` } });
+    }
+  },
   loader: async ({ params }) => {
-    const page = await getLinkinbioBySlug({ data: params.slug });
+    const slug = params.slug.slice(1);
+    const page = await getLinkinbioBySlug({ data: slug });
     if (!page) throw notFound();
     return page;
   },
