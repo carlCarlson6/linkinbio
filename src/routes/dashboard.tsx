@@ -19,7 +19,7 @@ const slugSchema = z.object({
     ),
 })
 
-function getFriendlySlugError(err: unknown) {
+function getErrorReason(err: unknown) {
   if (Array.isArray(err)) {
     const firstIssue = err.find(
       (issue): issue is { message?: string } =>
@@ -45,6 +45,30 @@ function getFriendlySlugError(err: unknown) {
   }
 
   return message
+}
+
+function formatErrorMessage(err: unknown) {
+  const code = (err as { code?: string })?.code
+
+  if (code === '23505') {
+    return 'Invalid input: That slug is already taken'
+  }
+
+  if (Array.isArray(err) || err instanceof z.ZodError) {
+    return `Invalid input: ${getErrorReason(err)}`
+  }
+
+  const reason = getErrorReason(err)
+
+  if (
+    reason.includes('invalid_format') ||
+    reason.includes('Please enter a') ||
+    reason.includes('Use only lowercase')
+  ) {
+    return `Invalid input: ${reason}`
+  }
+
+  return `Server error: ${reason}`
 }
 
 const getLinkinbios = createServerFn({ method: 'GET' }).handler(async () => {
@@ -89,7 +113,7 @@ function RouteComponent() {
     const validation = slugSchema.safeParse({ slug: normalized });
 
     if (!validation.success) {
-      setError(validation.error.issues[0]?.message ?? 'Please enter a valid slug');
+      setError(formatErrorMessage(validation.error));
       return;
     }
 
@@ -99,12 +123,7 @@ function RouteComponent() {
       setSlug('');
       await router.invalidate();
     } catch (err: unknown) {
-      const code = (err as { code?: string })?.code;
-      setError(
-        code === '23505'
-          ? 'That slug is already taken'
-          : getFriendlySlugError(err),
-      );
+      setError(formatErrorMessage(err));
     } finally {
       setPending(false);
     }
