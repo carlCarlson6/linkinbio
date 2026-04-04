@@ -57,7 +57,7 @@ const getLinkinbioPanel = createServerFn({ method: 'GET' })
       .select()
       .from(links)
       .where(eq(links.linkinbioId, page.id))
-      .orderBy(asc(links.order), asc(links.createdAt))
+      .orderBy(asc(links.sortOrder), asc(links.createdAt))
 
     return { page, links: pageLinks }
   })
