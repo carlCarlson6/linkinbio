@@ -51,7 +51,7 @@ Validates required environment variables, including Clerk keys for server and cl
 - [x] `SEC-002` Remove plaintext local secret exposure and rotate compromised keys.
   Current risk: secrets are present in `.env` and `.clerk/.tmp/keyless.json`.
 
-- [ ] `SEC-003` Introduce explicit authorization boundaries beyond signed-in checks.
+- [x] `SEC-003` Introduce explicit authorization boundaries beyond signed-in checks.
   Current risk: access control is presence-based only, without role/permission checks for future sensitive features.
 
 - [ ] `SEC-004` Enforce startup-time environment validation for auth secrets.

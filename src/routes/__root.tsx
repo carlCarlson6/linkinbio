@@ -14,9 +14,9 @@ import { createServerFn } from '@tanstack/react-start'
 import { auth } from '@clerk/tanstack-react-start/server'
 
 const fetchClerkAuth = createServerFn({ method: 'GET' }).handler(async () => {
-  const { userId, sessionId } = await auth();
+  const { userId, orgRole, orgPermissions } = await auth();
   if (!userId) return undefined;
-  return { userId };
+  return { userId, orgRole: orgRole ?? null, orgPermissions: orgPermissions ?? [] };
 });
 
 export const Route = createRootRoute({

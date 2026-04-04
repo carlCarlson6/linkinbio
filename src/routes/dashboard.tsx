@@ -1,11 +1,10 @@
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { UserButton } from '@clerk/tanstack-react-start'
+import { requireAuth } from '../lib/authorization'
 
 export const Route = createFileRoute('/dashboard')({
-  beforeLoad: ({context: { user }}) => {
-    if (!user) {
-      throw redirect({ to: '/' })
-    }
+  beforeLoad: ({ context: { user } }) => {
+    requireAuth(user)
   },
   ssr: true,
   component: RouteComponent,
