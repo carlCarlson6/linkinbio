@@ -89,10 +89,8 @@ const createLinkinbio = createServerFn({ method: 'POST' })
     await db.insert(linkinbios).values({ userId, slug: data.slug });
   });
 
-const deleteLinkinbioSchema = z.object({ slug: z.string().min(1) });
-
 const deleteLinkinbio = createServerFn({ method: 'POST' })
-  .inputValidator(deleteLinkinbioSchema)
+  .inputValidator(slugSchema)
   .handler(async ({ data }) => {
     const { userId } = await auth();
     if (!userId) throw new Error('Unauthorized');
