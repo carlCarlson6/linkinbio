@@ -191,21 +191,33 @@ function RouteComponent() {
 
         <form onSubmit={handleAddLink} className="mb-8 flex flex-col gap-3">
           <p className="text-sm font-medium text-slate-700">Add a new link</p>
-          <input
-            type="text"
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            placeholder="Title"
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
-          />
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-1">
+            <label htmlFor="title" className="text-sm font-medium text-slate-700">
+              Title
+            </label>
             <input
-              type="url"
-              value={url}
-              onChange={e => setUrl(e.target.value)}
-              placeholder="https://example.com"
-              className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
+              id="title"
+              type="text"
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+              placeholder="Title"
+              className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
             />
+          </div>
+          <div className="flex gap-2">
+            <div className="flex flex-1 flex-col gap-1">
+              <label htmlFor="url" className="text-sm font-medium text-slate-700">
+                URL
+              </label>
+              <input
+                id="url"
+                type="url"
+                value={url}
+                onChange={e => setUrl(e.target.value)}
+                placeholder="https://example.com"
+                className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
+              />
+            </div>
             <button
               type="submit"
               disabled={pending}
