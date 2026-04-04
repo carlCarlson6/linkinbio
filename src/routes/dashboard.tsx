@@ -46,7 +46,7 @@ function RouteComponent() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    const normalized = slug.startsWith('@') ? slug.slice(1) : slug;
+    const normalized = slug.trim().toLowerCase().replace(/^@/, '');
     if (!normalized) { setError('Slug is required'); return; }
     setPending(true);
     try {
@@ -54,8 +54,8 @@ function RouteComponent() {
       setSlug('');
       await router.invalidate();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
-      setError(msg.includes('unique') ? 'That slug is already taken' : msg);
+      const code = (err as { code?: string })?.code;
+      setError(code === '23505' ? 'That slug is already taken' : (err instanceof Error ? err.message : String(err)));
     } finally {
       setPending(false);
     }
