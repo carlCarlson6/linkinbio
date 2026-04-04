@@ -5,7 +5,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { auth } from '@clerk/tanstack-react-start/server'
 import { db } from '../db'
 import { linkinbios } from '../db/schema'
-import { asc, eq } from 'drizzle-orm'
+import { asc, eq, and } from 'drizzle-orm'
 import { useState } from 'react'
 import z from 'zod'
 
@@ -89,6 +89,16 @@ const createLinkinbio = createServerFn({ method: 'POST' })
     await db.insert(linkinbios).values({ userId, slug: data.slug });
   });
 
+const deleteLinkinbio = createServerFn({ method: 'POST' })
+  .inputValidator(slugSchema)
+  .handler(async ({ data }) => {
+    const { userId } = await auth();
+    if (!userId) throw new Error('Unauthorized');
+    await db
+      .delete(linkinbios)
+      .where(and(eq(linkinbios.slug, data.slug), eq(linkinbios.userId, userId)));
+  });
+
 export const Route = createFileRoute('/dashboard')({
   beforeLoad: ({ context: { user } }) => {
     requireAuth(user)
@@ -104,6 +114,11 @@ function RouteComponent() {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const router = useRouter();
+
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState('');
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deletePending, setDeletePending] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -126,6 +141,37 @@ function RouteComponent() {
       setError(formatErrorMessage(err));
     } finally {
       setPending(false);
+    }
+  }
+
+  function openDeleteModal(itemSlug: string) {
+    setDeleteTarget(itemSlug);
+    setDeleteConfirm('');
+    setDeleteError(null);
+  }
+
+  function closeDeleteModal() {
+    setDeleteTarget(null);
+    setDeleteConfirm('');
+    setDeleteError(null);
+  }
+
+  async function handleDelete() {
+    if (!deleteTarget) return;
+    if (deleteConfirm !== deleteTarget) {
+      setDeleteError('The name you entered does not match. Please try again.');
+      return;
+    }
+    setDeletePending(true);
+    setDeleteError(null);
+    try {
+      await deleteLinkinbio({ data: { slug: deleteTarget } });
+      closeDeleteModal();
+      await router.invalidate();
+    } catch (err: unknown) {
+      setDeleteError(formatErrorMessage(err));
+    } finally {
+      setDeletePending(false);
     }
   }
 
@@ -180,17 +226,76 @@ function RouteComponent() {
             {items.map(item => (
               <li key={item.id} className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
                 <span className="font-medium text-slate-800">@{item.slug}</span>
-                <a
-                  href={`/@${item.slug}`}
-                  className="text-sm text-slate-500 hover:text-slate-900 hover:underline"
-                >
-                  View page →
-                </a>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => openDeleteModal(item.slug)}
+                    aria-label={`Delete @${item.slug}`}
+                    className="rounded-lg p-1.5 text-red-500 hover:bg-red-50 hover:text-red-700"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <polyline points="3 6 5 6 21 6" />
+                      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                      <path d="M10 11v6" />
+                      <path d="M14 11v6" />
+                      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                    </svg>
+                  </button>
+                  <a
+                    href={`/@${item.slug}`}
+                    className="text-sm text-slate-500 hover:text-slate-900 hover:underline"
+                  >
+                    View page →
+                  </a>
+                </div>
               </li>
             ))}
           </ul>
         )}
       </div>
+
+      {deleteTarget !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-dialog-title"
+            className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-xl"
+          >
+            <h3 id="delete-dialog-title" className="text-lg font-semibold text-slate-900">Delete @{deleteTarget}?</h3>
+            <p className="mt-2 text-sm text-slate-600">
+              This action cannot be undone. To confirm, type{' '}
+              <span className="font-semibold text-slate-800">{deleteTarget}</span> below.
+            </p>
+            <input
+              type="text"
+              value={deleteConfirm}
+              onChange={e => setDeleteConfirm(e.target.value)}
+              placeholder={deleteTarget}
+              aria-label={`Type ${deleteTarget} to confirm deletion`}
+              className="mt-4 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
+            />
+            {deleteError && (
+              <p className="mt-2 text-sm text-red-600">{deleteError}</p>
+            )}
+            <div className="mt-5 flex justify-end gap-3">
+              <button
+                onClick={closeDeleteModal}
+                disabled={deletePending}
+                className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deletePending || deleteConfirm !== deleteTarget}
+                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+              >
+                {deletePending ? 'Deleting…' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   )
 }
