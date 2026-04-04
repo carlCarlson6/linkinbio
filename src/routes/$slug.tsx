@@ -1,0 +1,69 @@
+import { createFileRoute, notFound, redirect } from '@tanstack/react-router'
+import { createServerFn } from '@tanstack/react-start'
+import { z } from 'zod'
+import { db } from '../db'
+import { linkinbios } from '../db/schema'
+import { eq } from 'drizzle-orm'
+
+const slugSchema = z.string().min(1).max(255)
+
+const getLinkinbioBySlug = createServerFn({ method: 'GET' })
+  .inputValidator((slug) => slugSchema.parse(slug))
+  .handler(async ({ data: slug }) => {
+    const [page] = await db
+      .select()
+      .from(linkinbios)
+      .where(eq(linkinbios.slug, slug))
+      .limit(1);
+    return page ?? null;
+  });
+
+export const Route = createFileRoute('/$slug')({
+  beforeLoad: ({ params }) => {
+    if (!params.slug.startsWith('@')) {
+      throw redirect({ to: '/$slug', params: { slug: `@${params.slug}` } });
+    }
+  },
+  loader: async ({ params }) => {
+    const slug = params.slug.slice(1);
+    const page = await getLinkinbioBySlug({ data: slug });
+    if (!page) throw notFound();
+    return page;
+  },
+  notFoundComponent: NotFoundPage,
+  ssr: true,
+  component: RouteComponent,
+})
+
+function RouteComponent() {
+  const page = Route.useLoaderData();
+
+  return (
+    <main className="grid min-h-screen place-items-center bg-linear-to-b from-slate-50 to-slate-100 px-4 py-8">
+      <section className="w-full max-w-md rounded-2xl border border-slate-200 bg-white px-6 py-10 text-center shadow-[0_12px_30px_rgba(15,23,42,0.08)]">
+        <p className="text-3xl font-bold text-slate-900">@{page.slug}</p>
+        <p className="mt-2 text-sm text-slate-500">Linkinbio page</p>
+      </section>
+    </main>
+  )
+}
+
+function NotFoundPage() {
+  return (
+    <main className="grid min-h-screen place-items-center bg-slate-50 px-4">
+      <section className="text-center">
+        <p className="text-6xl font-bold text-slate-300">404</p>
+        <h1 className="mt-4 text-2xl font-semibold text-slate-800">Page not found</h1>
+        <p className="mt-2 text-slate-500">
+          The link-in-bio page you&apos;re looking for doesn&apos;t exist.
+        </p>
+        <a
+          href="/"
+          className="mt-6 inline-block rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-700"
+        >
+          Go home
+        </a>
+      </section>
+    </main>
+  )
+}
