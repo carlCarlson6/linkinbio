@@ -63,7 +63,7 @@ Validates required environment variables, including Clerk keys for server and cl
 
 - [x] `FEATURE-003` Add a btn to be able to delete a linkinbio, should has a double check validation, having to type the name of the linkinbio.
 
-- [ ] `Feature-004` From the /dashboard access to a particular linkinbio management panel, where the user will be able to manage the links
+- [x] `Feature-004` From the /dashboard access to a particular linkinbio management panel, where the user will be able to manage the links
 
 ## RELEASES
 

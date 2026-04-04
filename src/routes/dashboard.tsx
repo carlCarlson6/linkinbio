@@ -1,4 +1,4 @@
-import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
 import { UserButton } from '@clerk/tanstack-react-start'
 import { requireAuth } from '../lib/authorization'
 import { createServerFn } from '@tanstack/react-start'
@@ -226,7 +226,12 @@ function RouteComponent() {
             {items.map(item => (
               <li key={item.id} className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
                 <span className="font-medium text-slate-800">@{item.slug}</span>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
+                  <Link
+                    to="/dashboard/$slug"
+                    params={{ slug: item.slug }}
+                    className="text-sm font-medium text-slate-700 hover:text-slate-900 hover:underline"
+                  >Manage →</Link>
                   <button
                     onClick={() => openDeleteModal(item.slug)}
                     aria-label={`Delete @${item.slug}`}
@@ -240,6 +245,21 @@ function RouteComponent() {
                       <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
                     </svg>
                   </button>
+                  <a
+                    href={`/@${item.slug}`}
+                    className="text-sm text-slate-500 hover:text-slate-900 hover:underline"
+                  >
+                    View page →
+                  </a>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Link
+                    to="/dashboard/$slug"
+                    params={{ slug: item.slug }}
+                    className="text-sm font-medium text-slate-700 hover:text-slate-900 hover:underline"
+                  >
+                    Manage →
+                  </Link>
                   <a
                     href={`/@${item.slug}`}
                     className="text-sm text-slate-500 hover:text-slate-900 hover:underline"
