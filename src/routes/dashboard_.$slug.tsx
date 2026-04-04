@@ -9,10 +9,34 @@ import { asc, eq } from 'drizzle-orm'
 import { useState } from 'react'
 import { z } from 'zod'
 
+const safeUrlSchema = z.string().transform((value, ctx) => {
+  let parsedUrl: URL
+
+  try {
+    parsedUrl = new URL(value)
+  } catch {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Please enter a valid URL',
+    })
+    return z.NEVER
+  }
+
+  if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Please enter a valid HTTP or HTTPS URL',
+    })
+    return z.NEVER
+  }
+
+  return parsedUrl.href
+})
+
 const linkInputSchema = z.object({
   linkinbioId: z.string().uuid(),
   title: z.string().min(1, 'Please enter a title'),
-  url: z.string().url('Please enter a valid URL'),
+  url: safeUrlSchema,
 })
 
 const getLinkinbioPanel = createServerFn({ method: 'GET' })
