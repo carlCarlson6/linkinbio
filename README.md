@@ -65,6 +65,15 @@ Validates required environment variables, including Clerk keys for server and cl
 
 - [x] `Feature-004` From the /dashboard access to a particular linkinbio management panel, where the user will be able to manage the links
 
+- [ ] `SEC-005` Limit public slug pages to a minimal public data projection.
+  Current risk: `src/routes/$slug.tsx` currently returns the full `linkinbios` row, exposing internal identifiers and timestamps to anonymous visitors.
+
+- [ ] `SEC-006` Enforce environment validation during app startup.
+  Current risk: `src/env.ts` defines required configuration, but `src/start.ts` does not import it, so invalid auth or database settings can fail later at runtime.
+
+- [ ] `SEC-007` Replace the remaining nightly Nitro dependency with a stable release.
+  Current risk: `package.json` still depends on `nitro-nightly`, leaving residual pre-release supply-chain and regression exposure.
+
 ## RELEASES
 
 ### security hardening and workflow updates — 2026-04-04
