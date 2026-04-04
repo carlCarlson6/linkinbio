@@ -164,7 +164,13 @@ function RouteComponent() {
               {pending ? 'Creating…' : 'Create'}
             </button>
           </div>
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && (
+            <p
+              className={`text-sm ${error.startsWith('Invalid input:') ? 'text-amber-600' : 'text-red-600'}`}
+            >
+              {error}
+            </p>
+          )}
         </form>
 
         {items.length === 0 ? (
