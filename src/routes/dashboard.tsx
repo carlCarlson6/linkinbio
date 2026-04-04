@@ -225,7 +225,8 @@ function RouteComponent() {
           <ul className="flex flex-col gap-3">
             {items.map(item => (
               <li key={item.id} className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-                <div className="flex items-center gap-3">
+                <span className="font-medium text-slate-800">@{item.slug}</span>
+                <div className="flex items-center gap-2">
                   <button
                     onClick={() => openDeleteModal(item.slug)}
                     aria-label={`Delete @${item.slug}`}
@@ -239,14 +240,13 @@ function RouteComponent() {
                       <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
                     </svg>
                   </button>
-                  <span className="font-medium text-slate-800">@{item.slug}</span>
+                  <a
+                    href={`/@${item.slug}`}
+                    className="text-sm text-slate-500 hover:text-slate-900 hover:underline"
+                  >
+                    View page →
+                  </a>
                 </div>
-                <a
-                  href={`/@${item.slug}`}
-                  className="text-sm text-slate-500 hover:text-slate-900 hover:underline"
-                >
-                  View page →
-                </a>
               </li>
             ))}
           </ul>
