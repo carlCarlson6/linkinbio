@@ -1,11 +1,14 @@
 import { createFileRoute, notFound } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
+import { z } from 'zod'
 import { db } from '../db'
 import { linkinbios } from '../db/schema'
 import { eq } from 'drizzle-orm'
 
+const slugSchema = z.string().min(1).max(255)
+
 const getLinkinbioBySlug = createServerFn({ method: 'GET' })
-  .inputValidator((slug: string) => slug)
+  .inputValidator((slug) => slugSchema.parse(slug))
   .handler(async ({ data: slug }) => {
     const normalized = slug.startsWith('@') ? slug.slice(1) : slug;
     const [page] = await db
