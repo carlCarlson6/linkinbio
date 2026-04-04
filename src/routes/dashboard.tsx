@@ -5,14 +5,18 @@ import { createServerFn } from '@tanstack/react-start'
 import { auth } from '@clerk/tanstack-react-start/server'
 import { db } from '../db'
 import { linkinbios } from '../db/schema'
-import { eq } from 'drizzle-orm'
+import { asc, eq } from 'drizzle-orm'
 import { useState } from 'react'
 import z from 'zod'
 
 const getLinkinbios = createServerFn({ method: 'GET' }).handler(async () => {
   const { userId } = await auth();
   if (!userId) return [];
-  return db.select().from(linkinbios).where(eq(linkinbios.userId, userId));
+  return db
+    .select()
+    .from(linkinbios)
+    .where(eq(linkinbios.userId, userId))
+    .orderBy(asc(linkinbios.slug));
 });
 
 const createLinkinbio = createServerFn({ method: 'POST' })
