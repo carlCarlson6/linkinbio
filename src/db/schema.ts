@@ -16,7 +16,7 @@ export const links = pgTable('links', {
   linkinbioId: uuid('linkinbio_id').notNull().references(() => linkinbios.id, { onDelete: 'cascade' }),
   title: text('title').notNull(),
   url: text('url').notNull(),
-  order: integer('order').notNull().default(0),
+  sortOrder: integer('sort_order').notNull().default(0),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow().$onUpdate(() => new Date()),
 });
