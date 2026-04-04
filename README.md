@@ -58,3 +58,7 @@ Validates required environment variables, including Clerk keys for server and cl
   Current risk: required Clerk configuration may only fail at runtime because `src/env.ts` is not imported during app startup.
 
 ## RELEASES
+
+### security hardening and workflow updates — 2026-04-04
+PR: https://github.com/carlCarlson6/linkinbio/pull/6
+This release delivers dependency, secret-management, and authorization hardening alongside workflow updates for security reviews and task execution.
