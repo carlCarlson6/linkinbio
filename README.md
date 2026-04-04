@@ -48,7 +48,7 @@ Validates required environment variables, including Clerk keys for server and cl
 - [x] `SEC-001` Resolve supply-chain drift from unpinned nightly dependency.
   Current risk: `package.json` uses `nitro: npm:nitro-nightly@latest`, which causes non-reproducible installs.
 
-- [ ] `SEC-002` Remove plaintext local secret exposure and rotate compromised keys.
+- [x] `SEC-002` Remove plaintext local secret exposure and rotate compromised keys.
   Current risk: secrets are present in `.env` and `.clerk/.tmp/keyless.json`.
 
 - [ ] `SEC-003` Introduce explicit authorization boundaries beyond signed-in checks.
