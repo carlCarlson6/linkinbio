@@ -54,7 +54,7 @@ Validates required environment variables, including Clerk keys for server and cl
 - [x] `SEC-003` Introduce explicit authorization boundaries beyond signed-in checks.
   Current risk: access control is presence-based only, without role/permission checks for future sensitive features.
 
-- [ ] `SEC-004` Enforce startup-time environment validation for auth secrets.
+- [x] `SEC-004` Enforce startup-time environment validation for auth secrets.
   Current risk: required Clerk configuration may only fail at runtime because `src/env.ts` is not imported during app startup.
 
 - [ ] `FEATURE-001` Start implementing Dashboard features. Start with beign able to create the entity `linkinbio` where the user can group their links, it will require an input of a @slug that should be unique.
