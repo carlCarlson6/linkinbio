@@ -5,3 +5,4 @@ dist
 # clerk configuration (can include secrets)
 /.clerk/
 .output/
+.DS_STORE
